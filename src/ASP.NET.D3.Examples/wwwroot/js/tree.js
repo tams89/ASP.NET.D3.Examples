@@ -8,11 +8,11 @@
                 "parent": "A",
                 "children": [
                     {
-                        "name": "A21",
+                        "name": "A11",
                         "parent": "A1"
                     },
                     {
-                        "name": "A22",
+                        "name": "A12",
                         "parent": "A1"
                     }
                 ]
