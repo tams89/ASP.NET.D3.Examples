@@ -1,30 +1,29 @@
-﻿var treeData = [
-    {
-        "name": "A",
-        "parent": "null",
-        "children": [
-            {
-                "name": "A1",
-                "parent": "A",
-                "children": [
-                    {
-                        "name": "A11",
-                        "parent": "A1"
-                    },
-                    {
-                        "name": "A12",
-                        "parent": "A1"
-                    }
-                ]
-            },
-            {
-                "name": "A2",
-                "parent": "A"
-            }
-        ]
-    }
-];
-
+﻿//var treeData = [
+//    {
+//        "Name": "A",
+//        "parent": "null",
+//        "Children": [
+//            {
+//                "Name": "A1",
+//                "parent": "A",
+//                "Children": [
+//                    {
+//                        "Name": "A11",
+//                        "parent": "A1"
+//                    },
+//                    {
+//                        "Name": "A12",
+//                        "parent": "A1"
+//                    }
+//                ]
+//            },
+//            {
+//                "Name": "A2",
+//                "parent": "A"
+//            }
+//        ]
+//    }
+//];
 
 // ************** Generate the tree diagram	 *****************
 var margin = { top: 20, right: 120, bottom: 20, left: 120 },
@@ -47,7 +46,7 @@ var svg = d3.select("#tree").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-root = treeData[0];
+root = treeData[1];
 root.x0 = height / 2;
 root.y0 = 0;
 
@@ -73,20 +72,19 @@ function update(source) {
         .attr("class", "node")
         .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; });
 
-
     nodeEnter.append("circle")
         .attr("r", 1e-6)
         .style("fill", function (d) {
             // TODO could check the "type" of node here and display icons based on that
-            return d._children ? "lightsteelblue" : "#fff";
+            return d._Children ? "lightsteelblue" : "#fff";
         })
         .on("click", click);
 
     nodeEnter.append("text")
-        .attr("x", function (d) { return d.children || d._children ? -13 : 13; })
-        .attr("dy", ".35em")
-        .attr("text-anchor", function (d) { return d.children || d._children ? "end" : "start"; })
-        .text(function (d) { return d.name; })
+        .attr("dy", function (d) { return -15; })
+        .attr("dx", function (d) { return 4; })
+        .attr("text-anchor", function (d) { return d.Children || d._Children ? "end" : "start"; })
+        .text(function (d) { return d.Name; })
         .style("fill-opacity", 1e-6)
         .on('click', function (d) {
             openModal();
@@ -100,7 +98,7 @@ function update(source) {
 
     nodeUpdate.select("circle")
         .attr("r", 10)
-        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+        .style("fill", function (d) { return d._Children ? "lightsteelblue" : "#fff"; });
 
     nodeUpdate.select("text")
         .style("fill-opacity", 1);
@@ -152,12 +150,12 @@ function update(source) {
 
 // Toggle child node expansion on click.
 function click(d) {
-    if (d.children) {
-        d._children = d.children;
-        d.children = null;
+    if (d.Children) {
+        d._Children = d.Children;
+        d.Children = null;
     } else {
-        d.children = d._children;
-        d._children = null;
+        d.Children = d._Children;
+        d._Children = null;
     }
     update(d);
 }

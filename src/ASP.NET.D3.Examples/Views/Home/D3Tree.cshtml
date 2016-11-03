@@ -1,4 +1,6 @@
-﻿@model dynamic
+﻿@using System.Threading.Tasks
+@using Newtonsoft.Json
+@model dynamic
 
 @{
     ViewBag.Title = "Example";
@@ -8,15 +10,29 @@
 <h2>D3 - Tree</h2>
 
 <div id="myModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <label for="modalName">Name:</label>
-        <input type="text" id="modalName">
-        <div class=buttons>
-            <input type="button" value="Save" onclick="saveModal()" />
-            <input type="button" value="Cancel" onclick="closeModal()" />
+    <form action="/" method="post">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <label for="modalName">Name:</label>
+            <input type="text" id="modalName" required>
+            <div class=buttons>
+                <input type="button" value="Save" onclick="saveModal()" />
+                <input type="button" value="Cancel" onclick="closeModal()" />
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 
 <div id="tree"></div>
+
+<br />
+<input type="button" value="Reset Data" class="btn btn-danger" onclick="window.location='@Url.Action("ResetData")'" />
+
+@section scripts
+{
+    <script>
+        var treeData = @Html.Raw(ViewBag.JsonData);
+    </script>
+    <script src="~/js/modal.js"></script>
+    <script src="~/js/tree.js"></script>
+}
