@@ -1,0 +1,22 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>D3 - Tree</h2>
+
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <label for="modalName">Name:</label>
+        <input type="text" id="modalName">
+        <div class=buttons>
+            <input type="button" value="Save" onclick="saveModal()" />
+            <input type="button" value="Cancel" onclick="closeModal()" />
+        </div>
+    </div>
+</div>
+
+<div id="tree"></div>
