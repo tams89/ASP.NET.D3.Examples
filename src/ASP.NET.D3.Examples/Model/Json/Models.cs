@@ -8,6 +8,7 @@ namespace ASP.NET.D3.Examples.Model.Json
         {
             public int Id { get; set; }
             public string Name { get; set; }
+            public string Type { get; set; }
         }
 
         public class Company : Reference

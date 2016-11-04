@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ASP.NET.D3.Examples.Model;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -117,15 +118,38 @@ namespace ASP.NET.D3.Examples.Controllers
             return View();
         }
 
-        public IActionResult Update(int id, string name)
+        public IActionResult Update(int id, string name, string type)
         {
-            var company = _context.Companies.SingleOrDefault(x => x.Id == id);
-            if (company != null)
+            var loadedType = Type.GetType(type);
+
+            if (loadedType == typeof(Models.Company))
             {
-                company.Name = name;
-                _context.Update(company);
-                _context.SaveChanges();
+                var company = _context.Companies.SingleOrDefault(x => x.Id == id);
+                if (company != null)
+                {
+                    company.Name = name;
+                    _context.Update(company);
+                }
             }
+            else if (loadedType == typeof(Models.Subsidiary))
+            {
+                var subsidiary = _context.Subsidiaries.SingleOrDefault(x => x.Id == id);
+                if (subsidiary != null)
+                {
+                    subsidiary.Name = name;
+                    _context.Update(subsidiary);
+                }
+            }
+            else if (loadedType == typeof(Models.Department))
+            {
+                var department = _context.Departments.SingleOrDefault(x => x.Id == id);
+                if (department != null)
+                {
+                    department.Name = name;
+                    _context.Update(department);
+                }
+            }
+            _context.SaveChanges();
 
             return RedirectToAction("D3Tree");
         }

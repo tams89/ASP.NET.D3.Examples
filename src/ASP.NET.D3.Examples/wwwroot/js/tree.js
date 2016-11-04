@@ -16,16 +16,7 @@ var svg = d3.select("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
 var root = d3.hierarchy(treeData[0]);
-
-root.each(function(d) {
-
-    d.name = d.id; //transferring name to a name variable
-    d.id = i; //Assigning numerical Ids
-    i++;
-
-});
 
 root.x0 = height / 2;
 root.y0 = 0;
@@ -56,25 +47,39 @@ function update(source) {
     var node = svg.selectAll("g.node")
         .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
-
     // Enter any new nodes at the parent's previous position.
     var nodeEnter = node.enter()
         .append("g")
         .attr("class", "node")
-        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-        .on("click", click);
+        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; });
+
+    var stroke = function(d) {
+        if (d.data.type.indexOf("Company") > 0) return "red";
+        if (d.data.type.indexOf("Subsidiary") > 0) return "green";
+        if (d.data.type.indexOf("Department") > 0) return "blue";
+        return "white";
+    };
+
+    var fill = function (d) {
+        if (d.data.type.indexOf("Company") > 0) return d._children ? "red" : "#fff";
+        if (d.data.type.indexOf("Subsidiary") > 0) return d._children ? "green" : "#fff";
+        if (d.data.type.indexOf("Department") > 0) return d._children ? "blue" : "#fff";
+        return "white";
+    };
 
     nodeEnter.append("circle")
         .attr("r", 1e-6)
-        .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+        .style("fill", fill)
+        .style("stroke", stroke)
+        .on("click", toggleChildren);
 
     nodeEnter.append("text")
         .attr("x", 20)
         .attr("y", 25)
         .style("fill-opacity", 1e-6)
-        .attr("text-anchor", function (d) { return d.children || d._children ? "end" : "start"; })
-        .text(function (d) { return d.data.name; })
-        .on("click", function (d) { openModal(d.data); });
+        .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+        .text(function(d) { return d.data.name; })
+        .on("click", function(d) { openModal(d.data); });
 
     // Transition nodes to their new position.
     var nodeUpdate = node.merge(nodeEnter)
@@ -84,7 +89,8 @@ function update(source) {
 
     nodeUpdate.select("circle")
         .attr("r", 8)
-        .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+        .style("fill", fill)
+        .style("stroke", stroke);
 
     nodeUpdate.select("text")
         .style("fill-opacity", 1);
@@ -101,7 +107,6 @@ function update(source) {
 
     nodeExit.select("text")
         .style("fill-opacity", 1e-6);
-
 
     // Update the links…
     var link = svg.selectAll("path.link")
@@ -151,7 +156,7 @@ function update(source) {
 }
 
 // Toggle children on click.
-function click(d) {
+function toggleChildren(d) {
     if (d.children) {
         d._children = d.children;
         d.children = null;

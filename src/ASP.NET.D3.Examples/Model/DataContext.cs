@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASP.NET.D3.Examples.Model
@@ -17,10 +18,15 @@ namespace ASP.NET.D3.Examples.Model
 
     public class Models
     {
-        public class Reference
+        public abstract class Reference
         {
             public int Id { get; set; }
             public string Name { get; set; }
+
+            public string Type
+            {
+                get { return GetType().AssemblyQualifiedName; }
+            }
         }
 
         public class Company : Reference
