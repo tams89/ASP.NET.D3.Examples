@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ASP.NET.D3.Examples.Model;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace ASP.NET.D3.Examples.Controllers
 {
@@ -87,36 +90,44 @@ namespace ASP.NET.D3.Examples.Controllers
 
         public IActionResult D3Tree()
         {
-            var data = new List<Models.Company>();
-            data.AddRange(_context.Companies);
+            var data = new List<Model.Json.Models.Company>();
+
+            var companies = Mapper.Map<IEnumerable<Model.Json.Models.Company>>(
+                _context.Companies
+                .Include(x => x.Children)
+                );
+
+            data.AddRange(companies);
 
             foreach (var company in data)
             {
-                company.Children = _context.Subsidiaries
-                    .Include(x => x.Parent)
-                    .Where(x => x.Parent == company).ToList();
-
-                foreach (var subsidiary in company.Children)
-                {
-                    subsidiary.Parent = company;
-                    subsidiary.Children = _context.Departments
-                        .Include(x => x.Parent)
-                        .Where(x => x.Parent == subsidiary).ToList();
-
-                    foreach (var department in subsidiary.Children)
-                        department.Parent = subsidiary;
-                }
-
+                company.Children = Mapper.Map<IEnumerable<Model.Json.Models.Subsidiary>>(
+                    _context.Subsidiaries
+                    .Include(x => x.Children)
+                    .Where(x => x.Parent.Id == company.Id)
+                    );
             }
 
             var settings = new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
             ViewBag.JsonData = JsonConvert.SerializeObject(data, settings);
             return View();
+        }
+
+        public IActionResult Update(int id, string name)
+        {
+            var company = _context.Companies.SingleOrDefault(x => x.Id == id);
+            if (company != null)
+            {
+                company.Name = name;
+                _context.Update(company);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("D3Tree");
         }
     }
 }

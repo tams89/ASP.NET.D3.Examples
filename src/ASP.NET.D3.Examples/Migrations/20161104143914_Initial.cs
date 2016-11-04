@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ASP.NET.D3.Examples.Migrations
 {
-    public partial class MyFirstMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,32 +13,32 @@ namespace ASP.NET.D3.Examples.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    CompanyId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Companies", x => x.CompanyId);
+                    table.PrimaryKey("PK_Companies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Subsidiaries",
                 columns: table => new
                 {
-                    SubsidiaryId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
-                    ParentCompanyId = table.Column<int>(nullable: true)
+                    ParentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subsidiaries", x => x.SubsidiaryId);
+                    table.PrimaryKey("PK_Subsidiaries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Subsidiaries_Companies_ParentCompanyId",
-                        column: x => x.ParentCompanyId,
+                        name: "FK_Subsidiaries_Companies_ParentId",
+                        column: x => x.ParentId,
                         principalTable: "Companies",
-                        principalColumn: "CompanyId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -46,31 +46,31 @@ namespace ASP.NET.D3.Examples.Migrations
                 name: "Departments",
                 columns: table => new
                 {
-                    DepartmentId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
-                    ParentSubsidiaryId = table.Column<int>(nullable: true)
+                    ParentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Departments", x => x.DepartmentId);
+                    table.PrimaryKey("PK_Departments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Departments_Subsidiaries_ParentSubsidiaryId",
-                        column: x => x.ParentSubsidiaryId,
+                        name: "FK_Departments_Subsidiaries_ParentId",
+                        column: x => x.ParentId,
                         principalTable: "Subsidiaries",
-                        principalColumn: "SubsidiaryId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Departments_ParentSubsidiaryId",
+                name: "IX_Departments_ParentId",
                 table: "Departments",
-                column: "ParentSubsidiaryId");
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subsidiaries_ParentCompanyId",
+                name: "IX_Subsidiaries_ParentId",
                 table: "Subsidiaries",
-                column: "ParentCompanyId");
+                column: "ParentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

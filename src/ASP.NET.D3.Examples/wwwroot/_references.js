@@ -1,5 +1,5 @@
 ﻿/// <autosync enabled="true" />
-/// <reference path="js/javascript.js" />
+/// <reference path="js/modal.js" />
 /// <reference path="js/site.js" />
 /// <reference path="js/tree.js" />
 /// <reference path="lib/bootstrap/dist/js/bootstrap.js" />

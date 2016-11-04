@@ -1,4 +1,6 @@
-﻿using ASP.NET.D3.Examples.Model;
+﻿using ASP.NET.D3.Examples.AutoMapper;
+using ASP.NET.D3.Examples.Model;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +16,8 @@ namespace ASP.NET.D3.Examples
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -30,6 +32,13 @@ namespace ASP.NET.D3.Examples
 
             var connection = @"Server=(localdb)\mssqllocaldb;Database=ASP.NET.D3.Examples;Trusted_Connection=True;";
             services.AddDbContext<DataContext>(options => options.UseSqlServer(connection));
+
+            Mapper.Initialize(Config);
+        }
+
+        private void Config(IMapperConfigurationExpression mapperConfigurationExpression)
+        {
+            mapperConfigurationExpression.AddProfile<Mappings>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,8 +62,8 @@ namespace ASP.NET.D3.Examples
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    "default",
+                    "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

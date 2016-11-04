@@ -2,18 +2,16 @@
 var modal = document.getElementById('myModal');
 
 // Define funtion to close modal
-var openModal = function () {
+var openModal = function (data) {
+    document.getElementById("id").value = data.id;
+    document.getElementById("data").value = data.name;
     modal.style.display = "block";
 }
 
 // Define function to close modal.
 var closeModal = function () {
     modal.style.display = "none";
-}
-
-var saveModal = function () {
-    // TODO ajax update the data here or trigger a post?
-    closeModal();
+    update();
 }
 
 // When the user clicks anywhere outside of the modal, close it

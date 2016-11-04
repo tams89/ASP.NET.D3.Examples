@@ -17,28 +17,25 @@ namespace ASP.NET.D3.Examples.Model
 
     public class Models
     {
-        public class Company
+        public class Reference
         {
-            public int CompanyId { get; set; }
+            public int Id { get; set; }
             public string Name { get; set; }
+        }
 
+        public class Company : Reference
+        {
             public List<Subsidiary> Children { get; set; }
         }
 
-        public class Subsidiary
+        public class Subsidiary : Reference
         {
-            public int SubsidiaryId { get; set; }
-            public string Name { get; set; }
-
             public Company Parent { get; set; }
             public List<Department> Children { get; set; }
         }
 
-        public class Department
+        public class Department : Reference
         {
-            public int DepartmentId { get; set; }
-            public string Name { get; set; }
-
             public Subsidiary Parent { get; set; }
         }
     }
